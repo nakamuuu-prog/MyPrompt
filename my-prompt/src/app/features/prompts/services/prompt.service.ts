@@ -2,12 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Prompt } from '../models/prompt.model';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PromptService {
-  private readonly apiUrl = 'http://localhost:5115/api/prompts';
+  private readonly apiUrl = `${environment.apiUrl}/prompts`;
 
   private http = inject(HttpClient);
 
