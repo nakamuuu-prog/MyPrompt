@@ -24,3 +24,5 @@ _ReSharper*/
 
 .DS_Store
 Thumbs.db
+
+*.db*
