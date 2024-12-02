@@ -29,4 +29,21 @@ public class PromptsController : ControllerBase
       return StatusCode(500, "プロンプト一覧取得中にエラーが発生しました。");
     }
   }
+
+  [HttpGet("{id}")]
+  public async Task<ActionResult<Prompt>> GetPrompt(Guid id)
+  {
+    try
+    {
+      var prompt = await _context.Prompts.FindAsync(id);
+
+      if (prompt == null) return NotFound($"ID: {id} のプロンプトは見つかりませんでした。");
+
+      return Ok(prompt);
+    }
+    catch
+    {
+      return StatusCode(500, "プロンプト取得中にエラーが発生しました。");
+    }
+  }
 }
