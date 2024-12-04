@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { PromptService } from '../../services/prompt.service';
 import { Prompt } from '../../models/prompt.model';
 import { CommonModule } from '@angular/common';
@@ -15,29 +15,30 @@ import { MatPaginator } from '@angular/material/paginator';
   styleUrl: './prompt-list.component.scss',
 })
 export class PromptListComponent implements OnInit {
-  private promptService = inject(PromptService);
+  private readonly promptService = inject(PromptService);
+
   promptsColumns: string[] = ['position', 'name', 'weight'];
   prompts!: MatTableDataSource<Prompt, MatPaginator>;
 
-  isLoading = false;
-  error: string | null = null;
+  isLoading = signal(false);
+  error = signal<string | null>(null);
 
   ngOnInit() {
     this.loadPrompts();
   }
 
   loadPrompts() {
-    this.isLoading = true;
-    this.error = null;
+    this.isLoading.set(true);
+    this.error.set(null);
 
     this.promptService.getPrompts().subscribe({
       next: (prompts: Prompt[]) => {
         this.prompts = new MatTableDataSource(prompts);
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
       error: (error) => {
-        this.error = 'プロンプト取得中にエラーが発生しました。';
-        this.isLoading = false;
+        this.error.set('プロンプト一覧取得中にエラーが発生しました。');
+        this.isLoading.set(false);
         console.error('Error loading propmpts:', error);
       },
     });

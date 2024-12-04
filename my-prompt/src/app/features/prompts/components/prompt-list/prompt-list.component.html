@@ -5,7 +5,7 @@
     </div>
   </div>
 
-  <div *ngIf="isLoading" class="row">
+  <div *ngIf="isLoading()" class="row">
     <div class="col text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -13,10 +13,10 @@
     </div>
   </div>
 
-  <div *ngIf="error" class="row">
+  <div *ngIf="error()" class="row">
     <div class="col">
       <div class="alert alert-danger" role="alert">
-        {{ error }}
+        {{ error() }}
         <button type="button" class="btn btn-link" (click)="loadPrompts()">
           再試行
         </button>
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading">
+  <div *ngIf="!isLoading()">
     <mat-form-field>
       <mat-label>Filter</mat-label>
       <input matInput (keyup)="applyFilter($event)" #input />
