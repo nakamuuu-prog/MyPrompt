@@ -1,0 +1,39 @@
+<div class="container mt-4">
+  <div *ngIf="isLoading()" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error()" class="alert alert-danger" role="alert">
+    {{ error() }}
+  </div>
+
+  <div *ngIf="prompt()" class="row">
+    <div class="col">
+      <div class="mb-3">
+        <button mat-stroked-button routerLink="/prompts/list">
+          <mat-icon>arrow_back</mat-icon>
+          一覧に戻る
+        </button>
+      </div>
+
+      <h2>{{ prompt()?.title }}</h2>
+      <div class="mb-3">
+        <span class="badge bg-secondary">{{ prompt()?.category }}</span>
+      </div>
+      <div class="mb-3">
+        <pre>{{ prompt()?.content }}</pre>
+        <button mat-flat-button (click)="copyContent()">
+          <mat-icon>content_copy</mat-icon>
+          コピー
+        </button>
+      </div>
+      <div class="text-muted">
+        <small>作成日: {{ prompt()?.createdAt | date : "medium" }}</small
+        ><br />
+        <small>更新日: {{ prompt()?.updatedAt | date : "medium" }}</small>
+      </div>
+    </div>
+  </div>
+</div>

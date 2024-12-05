@@ -31,17 +31,17 @@
     </mat-form-field>
 
     <table mat-table [dataSource]="prompts">
-      <ng-container matColumnDef="position">
+      <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>タイトル</th>
         <td mat-cell *matCellDef="let prompt">{{ prompt.title }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="name">
+      <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef>カテゴリー</th>
         <td mat-cell *matCellDef="let prompt">{{ prompt.category }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="weight">
+      <ng-container matColumnDef="updatedAt">
         <th mat-header-cell *matHeaderCellDef>更新日</th>
         <td mat-cell *matCellDef="let prompt">
           {{ prompt.updatedAt | date : "short" }}
@@ -49,7 +49,12 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="promptsColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: promptsColumns"></tr>
+      <tr
+        mat-row
+        class="row-data"
+        *matRowDef="let row; columns: promptsColumns"
+        [routerLink]="['/prompt', row.id]"
+      ></tr>
 
       <tr class="mat-row" *matNoDataRow>
         <td class="mat-cell text-center" colspan="3">No data</td>

@@ -6,18 +6,25 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginator } from '@angular/material/paginator';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-prompt-list',
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatTableModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+  ],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss',
 })
 export class PromptListComponent implements OnInit {
   private readonly promptService = inject(PromptService);
 
-  promptsColumns: string[] = ['position', 'name', 'weight'];
+  promptsColumns: string[] = ['title', 'category', 'updatedAt'];
   prompts!: MatTableDataSource<Prompt, MatPaginator>;
 
   isLoading = signal(false);
