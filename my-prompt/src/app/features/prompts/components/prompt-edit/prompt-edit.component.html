@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h2>新規プロンプト作成</h2>
+    </div>
+  </div>
+
+  <div *ngIf="error()" class="alert alert-danger">
+    {{ error() }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col">
+        <mat-form-field class="w-100">
+          <mat-label>タイトル</mat-label>
+          <input matInput formControlName="title" required />
+          <mat-error *ngIf="form.get('title')?.errors?.['required']">
+            タイトルを入力してください
+          </mat-error>
+          <mat-error *ngIf="form.get('title')?.errors?.['maxlength']">
+            タイトルは100文字以内で入力してください
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>カテゴリー</mat-label>
+          <input matInput formControlName="category" required />
+          <mat-error *ngIf="form.get('category')?.errors?.['required']">
+            カテゴリーを入力してください
+          </mat-error>
+          <mat-error *ngIf="form.get('category')?.errors?.['maxlength']">
+            カテゴリーは50文字以内で入力してください
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100">
+          <mat-label>内容</mat-label>
+          <textarea
+            matInput
+            formControlName="content"
+            required
+            rows="10"
+          ></textarea>
+          <mat-error *ngIf="form.get('content')?.errors?.['required']">
+            内容を入力してください
+          </mat-error>
+        </mat-form-field>
+
+        <div class="mt-3">
+          <button
+            mat-stroked-button
+            type="button"
+            routerLink="/prompts/list"
+            class="me-2"
+          >
+            <mat-icon>arrow_back</mat-icon>
+            キャンセル
+          </button>
+          <button mat-flat-button type="submit" [disabled]="!form.valid">
+            <mat-icon>save</mat-icon>
+            作成
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

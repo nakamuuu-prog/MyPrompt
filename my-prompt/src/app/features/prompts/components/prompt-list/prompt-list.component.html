@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="row mb-4">
     <div class="col">
-      <h1>プロンプト一覧</h1>
+      <h2>プロンプト一覧</h2>
     </div>
   </div>
 
@@ -17,7 +17,8 @@
     <div class="col">
       <div class="alert alert-danger" role="alert">
         {{ error() }}
-        <button type="button" class="btn btn-link" (click)="loadPrompts()">
+        <button mat-button (click)="loadPrompts()">
+          <mat-icon>refresh</mat-icon>
           再試行
         </button>
       </div>
@@ -25,10 +26,17 @@
   </div>
 
   <div *ngIf="!isLoading()">
-    <mat-form-field>
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" #input />
-    </mat-form-field>
+    <div class="col">
+      <mat-form-field>
+        <mat-label>フィルター</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #input />
+      </mat-form-field>
+
+      <button mat-raised-button class="ms-2" routerLink="/prompt/new">
+        <mat-icon>add</mat-icon>
+        新規作成
+      </button>
+    </div>
 
     <table mat-table [dataSource]="prompts">
       <ng-container matColumnDef="title">

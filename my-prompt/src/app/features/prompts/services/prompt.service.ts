@@ -19,4 +19,8 @@ export class PromptService {
   getPrompt(id: string): Observable<Prompt> {
     return this.http.get<Prompt>(`${this.apiUrl}/${id}`);
   }
+
+  createPrompt(data: Prompt): Observable<Prompt> {
+    return this.http.post<Prompt>(this.apiUrl, data);
+  }
 }

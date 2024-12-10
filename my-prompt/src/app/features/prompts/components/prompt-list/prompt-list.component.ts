@@ -7,6 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginator } from '@angular/material/paginator';
 import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-prompt-list',
@@ -17,6 +19,8 @@ import { RouterModule } from '@angular/router';
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './prompt-list.component.html',
   styleUrl: './prompt-list.component.scss',
