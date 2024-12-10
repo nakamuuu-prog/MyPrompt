@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyPrompt.Data;
 using MyPrompt.Models;
+using MyPrompt.Models.Request;
 
 namespace MyPrompt.Controllers;
 
@@ -44,6 +45,32 @@ public class PromptsController : ControllerBase
     catch
     {
       return StatusCode(500, "プロンプト取得中にエラーが発生しました。");
+    }
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> CreatePrompt(CreatePromptRequest request)
+  {
+    try
+    {
+      var prompt = new Prompt
+      {
+        Id = Guid.NewGuid(),
+        Title = request.Title,
+        Content = request.Content,
+        Category = request.Category,
+        CreatedAt = DateTime.UtcNow,
+        UpdatedAt = DateTime.UtcNow,
+      };
+
+      _context.Prompts.Add(prompt);
+      await _context.SaveChangesAsync();
+
+      return Ok(prompt);
+    }
+    catch
+    {
+      return StatusCode(StatusCodes.Status500InternalServerError, "プロンプト登録中にエラーが発生しました。");
     }
   }
 }
