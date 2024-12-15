@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Prompt } from '../models/prompt.model';
+import { Prompt, PromptRequest } from '../models/prompt.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
@@ -20,7 +20,11 @@ export class PromptService {
     return this.http.get<Prompt>(`${this.apiUrl}/${id}`);
   }
 
-  createPrompt(data: Prompt): Observable<Prompt> {
-    return this.http.post<Prompt>(this.apiUrl, data);
+  createPrompt(data: PromptRequest): Observable<string> {
+    return this.http.post<string>(this.apiUrl, data);
+  }
+
+  updatePrompt(id: string, data: PromptRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, data);
   }
 }

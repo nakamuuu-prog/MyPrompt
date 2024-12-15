@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyPrompt.Models.Request;
 
-public class CreatePromptRequest
+public class PromptRequest
 {
   [Required(ErrorMessage = "タイトルは必須です")]
   [StringLength(100, ErrorMessage = "タイトルは100文字以内で入力してください")]

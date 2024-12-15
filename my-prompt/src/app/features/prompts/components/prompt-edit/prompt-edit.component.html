@@ -1,7 +1,13 @@
 <div class="container mt-4">
   <div class="row mb-4">
     <div class="col">
-      <h2>新規プロンプト作成</h2>
+      <h2>{{ promptId() ? "プロンプト編集" : "新規プロンプト作成" }}</h2>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
@@ -59,7 +65,7 @@
           </button>
           <button mat-flat-button type="submit" [disabled]="!form.valid">
             <mat-icon>save</mat-icon>
-            作成
+            {{ promptId() ? "更新" : "作成" }}
           </button>
         </div>
       </div>

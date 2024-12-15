@@ -16,6 +16,14 @@
           <mat-icon>arrow_back</mat-icon>
           一覧に戻る
         </button>
+        <button
+          mat-stroked-button
+          class="ms-2"
+          [routerLink]="['/prompt/', prompt()?.id, 'edit']"
+        >
+          <mat-icon>edit</mat-icon>
+          編集
+        </button>
       </div>
 
       <h2>{{ prompt()?.title }}</h2>

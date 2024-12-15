@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PromptService } from '../../services/prompt.service';
-import { Prompt } from '../../models/prompt.model';
+import { Prompt, PromptRequest } from '../../models/prompt.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,13 +25,16 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './prompt-edit.component.html',
   styleUrl: './prompt-edit.component.scss',
 })
-export class PromptEditComponent {
+export class PromptEditComponent implements OnInit {
   private fb = inject(FormBuilder);
   private promptService = inject(PromptService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   error = signal<string | null>(null);
   prompt = signal<Prompt | null>(null);
+  promptId = signal<string | null>(null);
+  isLoading = signal(false);
 
   form = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(100)]],
@@ -39,15 +42,63 @@ export class PromptEditComponent {
     content: ['', [Validators.required]],
   });
 
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.promptId.set(id);
+      this.loadPrompt(id);
+    }
+  }
+
+  private loadPrompt(id: string) {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.promptService.getPrompt(id).subscribe({
+      next: (prompt) => {
+        this.form.patchValue({
+          title: prompt.title,
+          category: prompt.category,
+          content: prompt.content,
+        });
+        this.isLoading.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.error.set('プロンプト取得中にエラーが発生しました。');
+        this.isLoading.set(false);
+        console.error('Error loading prompt:', error);
+      },
+    });
+  }
+
   onSubmit() {
-    if (this.form.valid) {
-      this.error.set(null);
+    if (!this.form.valid) return;
 
-      const data = this.form.getRawValue() as Prompt;
+    this.isLoading.set(true);
+    this.error.set(null);
 
-      this.promptService.createPrompt(data).subscribe({
-        next: (prompt) => this.router.navigate(['/prompt', prompt.id]),
+    const data = this.form.getRawValue() as PromptRequest;
+
+    if (this.promptId()) {
+      this.promptService.updatePrompt(this.promptId()!, data).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/prompt', this.promptId()]);
+        },
         error: (error: HttpErrorResponse) => {
+          this.isLoading.set(false);
+          this.error.set('プロンプトの更新中にエラーが発生しました');
+          console.error('Error updating prompt:', error);
+        },
+      });
+    } else {
+      this.promptService.createPrompt(data).subscribe({
+        next: (id) => {
+          this.isLoading.set(false);
+          this.router.navigate(['/prompt', id]);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoading.set(false);
           this.error.set('プロンプトの登録中にエラーが発生しました');
           console.error('Error creating prompt:', error);
         },

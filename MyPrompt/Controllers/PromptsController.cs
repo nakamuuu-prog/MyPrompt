@@ -49,7 +49,7 @@ public class PromptsController : ControllerBase
   }
 
   [HttpPost]
-  public async Task<IActionResult> CreatePrompt(CreatePromptRequest request)
+  public async Task<IActionResult> CreatePrompt(PromptRequest request)
   {
     try
     {
@@ -66,11 +66,34 @@ public class PromptsController : ControllerBase
       _context.Prompts.Add(prompt);
       await _context.SaveChangesAsync();
 
-      return Ok(prompt);
+      return Ok(prompt.Id);
     }
     catch
     {
       return StatusCode(StatusCodes.Status500InternalServerError, "プロンプト登録中にエラーが発生しました。");
+    }
+  }
+
+  [HttpPut("{id}")]
+  public async Task<IActionResult> UpdatePrompt(Guid id, PromptRequest request)
+  {
+    try
+    {
+      var prompt = await _context.Prompts.FindAsync(id);
+      if (prompt == null) return NotFound();
+
+      prompt.Title = request.Title;
+      prompt.Category = request.Category;
+      prompt.Content = request.Content;
+      prompt.UpdatedAt = DateTime.UtcNow;
+
+      await _context.SaveChangesAsync();
+
+      return Ok();
+    }
+    catch
+    {
+      return StatusCode(StatusCodes.Status500InternalServerError, "プロンプト更新中にエラーが発生しました。");
     }
   }
 }

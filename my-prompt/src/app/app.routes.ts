@@ -7,5 +7,6 @@ export const routes: Routes = [
   { path: '', redirectTo: 'prompts/list', pathMatch: 'full' },
   { path: 'prompts/list', component: PromptListComponent },
   { path: 'prompt/new', component: PromptEditComponent },
+  { path: 'prompt/:id/edit', component: PromptEditComponent },
   { path: 'prompt/:id', component: PromptDetailComponent },
 ];
