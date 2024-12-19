@@ -96,4 +96,24 @@ public class PromptsController : ControllerBase
       return StatusCode(StatusCodes.Status500InternalServerError, "プロンプト更新中にエラーが発生しました。");
     }
   }
+
+  [HttpDelete("{id}")]
+  public async Task<IActionResult> DeletePropmt(Guid id)
+  {
+    try
+    {
+      var prompt = await _context.Prompts.FindAsync(id);
+      if (prompt == null) return NotFound();
+
+      _context.Remove(prompt);
+
+      await _context.SaveChangesAsync();
+
+      return Ok();
+    }
+    catch (System.Exception)
+    {
+      return StatusCode(StatusCodes.Status500InternalServerError, "プロンプト削除中にエラーが発生しました。");
+    }
+  }
 }
