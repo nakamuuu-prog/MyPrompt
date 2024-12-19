@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Prompt } from '../../models/prompt.model';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PromptService } from '../../services/prompt.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -19,6 +19,7 @@ export class PromptDetailComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly promptService = inject(PromptService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly router = inject(Router);
 
   private readonly closeText = '閉じる';
 
@@ -34,9 +35,13 @@ export class PromptDetailComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadPrompt(id);
+    if (!id) {
+      this.error.set('プロンプト取得中にエラーが発生しました。');
+      console.error('idが取得できませんでした。');
+      return;
     }
+
+    this.loadPrompt(id);
   }
 
   private loadPrompt(id: string) {
@@ -75,5 +80,30 @@ export class PromptDetailComponent implements OnInit {
 
   private openSnackBar(message: string) {
     this.snackBar.open(message, this.closeText, this.snackBarConfig);
+  }
+
+  deletePrompt() {
+    if (!this.prompt() || !confirm('本当に削除しますか？')) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      this.error.set('プロンプト削除中にエラーが発生しました。');
+      console.error('idが取得できませんでした。');
+      return;
+    }
+
+    this.promptService.deletePrompt(id).subscribe({
+      next: () => this.router.navigate(['/prompts/list']),
+      error: (error: HttpErrorResponse) => {
+        this.error.set('プロンプト削除中にエラーが発生しました。');
+        this.isLoading.set(false);
+        console.error('Error deleting prompt:', error);
+      },
+    });
   }
 }

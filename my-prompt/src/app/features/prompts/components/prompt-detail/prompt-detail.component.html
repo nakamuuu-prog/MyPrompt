@@ -24,6 +24,10 @@
           <mat-icon>edit</mat-icon>
           編集
         </button>
+        <button mat-stroked-button class="ms-2" (click)="deletePrompt()">
+          <mat-icon>delete</mat-icon>
+          削除
+        </button>
       </div>
 
       <h2>{{ prompt()?.title }}</h2>

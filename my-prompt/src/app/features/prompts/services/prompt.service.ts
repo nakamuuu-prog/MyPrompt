@@ -27,4 +27,8 @@ export class PromptService {
   updatePrompt(id: string, data: PromptRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, data);
   }
+
+  deletePrompt(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
