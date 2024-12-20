@@ -26,16 +26,17 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './prompt-edit.component.scss',
 })
 export class PromptEditComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private promptService = inject(PromptService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private promptService = inject(PromptService);
 
-  error = signal<string | null>(null);
-  prompt = signal<Prompt | null>(null);
+  isNew = signal(false);
   promptId = signal<string | null>(null);
+  prompt = signal<Prompt | null>(null);
+  error = signal<string | null>(null);
   isLoading = signal(false);
 
+  private fb = inject(FormBuilder);
   form = this.fb.group({
     title: ['', [Validators.required, Validators.maxLength(100)]],
     category: ['', [Validators.required, Validators.maxLength(50)]],
@@ -43,11 +44,20 @@ export class PromptEditComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.promptId.set(id);
-      this.loadPrompt(id);
+    if (this.router.url === '/prompt/new') {
+      this.isNew.set(true);
+      return;
     }
+
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) {
+      this.error.set('プロンプト取得中にエラーが発生しました。');
+      console.error('idが取得できませんでした。');
+      return;
+    }
+
+    this.promptId.set(id);
+    this.loadPrompt(id);
   }
 
   private loadPrompt(id: string) {
@@ -79,19 +89,7 @@ export class PromptEditComponent implements OnInit {
 
     const data = this.form.getRawValue() as PromptRequest;
 
-    if (this.promptId()) {
-      this.promptService.updatePrompt(this.promptId()!, data).subscribe({
-        next: () => {
-          this.isLoading.set(false);
-          this.router.navigate(['/prompt', this.promptId()]);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.isLoading.set(false);
-          this.error.set('プロンプトの更新中にエラーが発生しました');
-          console.error('Error updating prompt:', error);
-        },
-      });
-    } else {
+    if (this.isNew()) {
       this.promptService.createPrompt(data).subscribe({
         next: (id) => {
           this.isLoading.set(false);
@@ -103,6 +101,26 @@ export class PromptEditComponent implements OnInit {
           console.error('Error creating prompt:', error);
         },
       });
+    } else {
+      this.promptService.updatePrompt(this.promptId()!, data).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.router.navigate(['/prompt', this.promptId()]);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoading.set(false);
+          this.error.set('プロンプトの更新中にエラーが発生しました');
+          console.error('Error updating prompt:', error);
+        },
+      });
+    }
+  }
+
+  cancel() {
+    if (this.isNew()) {
+      this.router.navigate(['/prompts/list']);
+    } else {
+      this.router.navigate(['/prompt', this.promptId()]);
     }
   }
 }

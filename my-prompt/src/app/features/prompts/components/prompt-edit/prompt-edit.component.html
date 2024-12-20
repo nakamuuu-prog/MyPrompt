@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="row mb-4">
     <div class="col">
-      <h2>{{ promptId() ? "プロンプト編集" : "新規プロンプト作成" }}</h2>
+      <h2>{{ isNew() ? "新規プロンプト作成" : "プロンプト編集" }}</h2>
     </div>
   </div>
 
@@ -57,7 +57,7 @@
           <button
             mat-stroked-button
             type="button"
-            routerLink="/prompts/list"
+            (click)="cancel()"
             class="me-2"
           >
             <mat-icon>arrow_back</mat-icon>
@@ -65,7 +65,7 @@
           </button>
           <button mat-flat-button type="submit" [disabled]="!form.valid">
             <mat-icon>save</mat-icon>
-            {{ promptId() ? "更新" : "作成" }}
+            {{ isNew() ? "作成" : "更新" }}
           </button>
         </div>
       </div>
