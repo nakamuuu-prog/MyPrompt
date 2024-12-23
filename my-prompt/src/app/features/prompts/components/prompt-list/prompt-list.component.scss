@@ -2,3 +2,8 @@
   background-color: whitesmoke;
   cursor: pointer;
 }
+
+// 日本語だと太字にならないので明示的に太字にする
+th {
+  font-weight: bold;
+}
